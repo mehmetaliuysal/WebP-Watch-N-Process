@@ -11,12 +11,13 @@ Before installing the WebP Watch and Process Service, you need to ensure that th
 - ImageMagick
 - cwebp
 - inotify-tools
+- redis server
 
 You can install these dependencies on a Debian-based system using the following commands:
 
 ```bash
 sudo apt-get update
-sudo apt-get install imagemagick webp inotify-tools
+sudo apt-get install imagemagick webp inotify-tools redis
 ```
 For other Linux distributions or operating systems, please use the corresponding package manager or download the software from the official websites.
 
