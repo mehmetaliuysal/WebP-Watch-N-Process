@@ -1,0 +1,14 @@
+[Unit]
+Description=WebP Watch and Process Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /etc/WebP-Watch-N-Process/watchers/wrapper.py
+Restart=on-failure
+RestartSec=10
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
