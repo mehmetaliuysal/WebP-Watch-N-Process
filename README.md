@@ -78,10 +78,10 @@ Each site must have a configuration file named `config.json` located in `home*/{
 ### Setting Up the Service
 To set up the image processing service on a Debian-based system, follow these steps:
 
-1. Copy the service file `image_wrapper.service` to the `/etc/systemd/system/` directory.
+1. Copy the service file `webp-watchnprocess.service` to the `/etc/systemd/system/` directory.
 
   ```bash
-  sudo cp image_wrapper.service /etc/systemd/system/
+  sudo cp webp-watchnprocess.service /etc/systemd/system/
   ```
 2. Reload the systemd daemon to recognize the new service.
 
@@ -92,19 +92,19 @@ To set up the image processing service on a Debian-based system, follow these st
 3. Start the service.
 
   ```bash
-  sudo systemctl start image_wrapper.service
+  sudo systemctl start webp-watchnprocess.service
   ```
 
 4. To ensure the service starts on boot, enable it.
 
   ```bash
-  sudo systemctl start image_wrapper.service
+  sudo systemctl start webp-watchnprocess.service
   ```
 
 5. You can check the status of the service using:
 
   ```bash
-  sudo systemctl status image_wrapper.service
+  sudo systemctl status webp-watchnprocess.service
   ```
 
 
