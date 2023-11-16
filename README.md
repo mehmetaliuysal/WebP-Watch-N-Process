@@ -98,7 +98,7 @@ To set up the image processing service on a Debian-based system, follow these st
 4. To ensure the service starts on boot, enable it.
 
   ```bash
-  sudo systemctl start webp-watchnprocess.service
+  sudo systemctl enable webp-watchnprocess.service
   ```
 
 5. You can check the status of the service using:
