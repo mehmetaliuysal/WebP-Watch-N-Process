@@ -4,8 +4,8 @@ import signal
 
 # Servis konfigürasyonları
 directories = ["/home", "/home1", "/home2"]
-base_watcher_path = '/gelistir/shopphp-tools/watchers/product-image-watcher.sh'
-base_processor_path = '/gelistir/shopphp-tools/watchers/product-image-processor.py'
+base_watcher_path = '/etc/WebP-Watch-N-Process/watchers/product-image-watcher.sh'
+base_processor_path = '/etc/WebP-Watch-N-Process/watchers/product-image-processor.py'
 
 # E-ticaret sitelerini bulmak için kullanılacak fonksiyon
 def find_ecommerce_sites(directories):

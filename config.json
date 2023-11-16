@@ -1,0 +1,10 @@
+{
+    "sizes": [
+        "100-150",
+        "400-600",
+        "600-900",
+        "1000-1500"
+    ],
+    "image_dir": "public_html/images/urunler",
+    "max_workers": 2
+}
