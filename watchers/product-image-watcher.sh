@@ -8,7 +8,6 @@ if [ -z "$siteid" ]; then
     exit 1
 fi
 
-
 # Aranacak ana dizinler
 directories=("/home" "/home1" "/home2")
 
@@ -16,16 +15,23 @@ directories=("/home" "/home1" "/home2")
 for dir in "${directories[@]}"; do
     if [[ -d "$dir/$siteid" ]]; then
         DIRECTORY="$dir/$siteid/public_html/images/urunler"
-        DB_FILE="db/product/${siteid}_events.db"
+		CONFIG_FILE="$dir/$siteid/watcher/image/product/config.json"
         break
     fi
 done
 
-# Eğer DIRECTORY ve DB_FILE değişkenleri boşsa, site bulunamadı
-if [ -z "$DIRECTORY" ] || [ -z "$DB_FILE" ]; then
+# Eğer DIRECTORY değişkeni boşsa, site bulunamadı
+if [ -z "$DIRECTORY" ]; then
     echo "Site $siteid bulunamadı."
     exit 1
 fi
+
+# config.json dosyasının varlığını kontrol et
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "config.json dosyası bulunamadı: $CONFIG_FILE"
+    exit 1
+fi
+
 
 
 REDIS_QUEUE_KEY="${siteid}_file_events"
