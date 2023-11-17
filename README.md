@@ -11,12 +11,13 @@ Before installing the WebP Watch and Process Service, you need to ensure that th
 - ImageMagick
 - cwebp
 - inotify-tools
+- redis server
 
 You can install these dependencies on a Debian-based system using the following commands:
 
 ```bash
 sudo apt-get update
-sudo apt-get install imagemagick webp inotify-tools
+sudo apt-get install imagemagick webp inotify-tools redis
 ```
 For other Linux distributions or operating systems, please use the corresponding package manager or download the software from the official websites.
 
@@ -77,10 +78,10 @@ Each site must have a configuration file named `config.json` located in `home*/{
 ### Setting Up the Service
 To set up the image processing service on a Debian-based system, follow these steps:
 
-1. Copy the service file `image_wrapper.service` to the `/etc/systemd/system/` directory.
+1. Copy the service file `webp-watchnprocess.service` to the `/etc/systemd/system/` directory.
 
   ```bash
-  sudo cp image_wrapper.service /etc/systemd/system/
+  sudo cp webp-watchnprocess.service /etc/systemd/system/
   ```
 2. Reload the systemd daemon to recognize the new service.
 
@@ -91,19 +92,19 @@ To set up the image processing service on a Debian-based system, follow these st
 3. Start the service.
 
   ```bash
-  sudo systemctl start image_wrapper.service
+  sudo systemctl start webp-watchnprocess.service
   ```
 
 4. To ensure the service starts on boot, enable it.
 
   ```bash
-  sudo systemctl start image_wrapper.service
+  sudo systemctl enable webp-watchnprocess.service
   ```
 
 5. You can check the status of the service using:
 
   ```bash
-  sudo systemctl status image_wrapper.service
+  sudo systemctl status webp-watchnprocess.service
   ```
 
 
