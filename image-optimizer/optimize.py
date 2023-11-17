@@ -3,6 +3,7 @@ import subprocess
 import argparse
 import time
 import threading
+import json
 
 def print_colored(message, color):
     """ Belirtilen renkte mesaj yazdır. """
@@ -119,6 +120,13 @@ def find_site_directory(base_dirs, site_folder):
             return potential_site_path
     return None
 
+def load_sizes_from_json(json_path):
+    """ JSON dosyasından boyutları yükle ve döndür. """
+    with open(json_path, 'r') as file:
+        data = json.load(file)
+        return data.get('sizes', [])
+
+
 # Argümanları tanımla ve ayrıştır
 parser = argparse.ArgumentParser(description='Resim optimizasyonu')
 parser.add_argument('--site', type=str, required=True, help='Site kullanıcı adı')
@@ -136,6 +144,16 @@ base_directories = args.base_dirs
 site_folder_name = args.site
 site_path = find_site_directory(base_directories, site_folder_name)
 source_directory = os.path.join(site_path, args.image_dir)
+
+if args.sizes is None:
+    json_path = os.path.join(site_path, 'watcher/image/product/config.json')
+    if os.path.exists(json_path):
+        args.sizes = load_sizes_from_json(json_path)
+        args.sizes = parse_dimensions(' '.join(args.sizes))
+    else:
+        print_colored("Boyutlar JSON dosyası bulunamadı. Lütfen --sizes argümanını kullanın.", "red")
+        exit(1)
+
 target_sizes = args.sizes
 
 thread_count = args.threads
