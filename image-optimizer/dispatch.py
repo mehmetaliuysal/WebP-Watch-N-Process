@@ -20,16 +20,20 @@ def run_script(site):
         return False
 
 
-def main():
-    script_to_check = "/etc/WebP-Watch-N-Process/image-optimizer/optimize.py"
-    site_to_check = "modasahrecm"  # Örnek site adı, ihtiyaca göre değiştirilebilir
-
+def main(site):
+    script_to_check = "/etc/WebP-Watch-N-Process/image-optimizer/dispatch.py"
+    site_to_check = site  # Örnek site adı, ihtiyaca göre değiştirilebilir
+    run_script(site)
+    """
     is_running, pid = check_if_process_is_running(script_to_check, site_to_check)
 
     if is_running:
         print(f"Script zaten PID {pid} ile ve '--site {site_to_check}' parametresi ile çalışıyor.")
+        exit(1)
     else:
         print(f"Script '--site {site_to_check}' parametresi ile çalışmıyor.")
+        #exit(1)
+    """
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
