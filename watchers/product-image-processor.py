@@ -5,7 +5,13 @@ import sys
 import subprocess
 import time
 import json
+import logging
 from concurrent.futures import ThreadPoolExecutor
+
+# Log dosyası konfigürasyonu
+log_file = 'logfile.log'  # Log dosyasının yolu
+logging.basicConfig(filename=log_file, level=logging.ERROR,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 def read_config(site_directory):
@@ -19,6 +25,8 @@ def read_config(site_directory):
             return sizes, max_workers, image_dir
     except Exception as e:
         print(f"Config dosyası okunurken hata oluştu: {e}")
+        logging.error(f"Config dosyası okunurken hata oluştu: {e}")
+
         return None, None
 
 
@@ -70,35 +78,38 @@ redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
 
 # İş parçacığı fonksiyonu
 def process_event(event):
-
-    if event:
-        event_data = event[1].decode('utf-8').split(' ')
-        image_path = event_data[0]
-        event_type = event_data[1]
-        if event_type=="DELETE" or event_type=="DELETE,ISDIR"  or event_type=="CREATE,ISDIR":
-            print("Delete atlandı:", image_path)
-            return True
-
-
-        print(f"İşleniyor: {image_path}, Event Type: {event_type}")
+    try:
+        if event:
+            event_data = event[1].decode('utf-8').split(' ')
+            image_path = event_data[0]
+            event_type = event_data[1]
+            if event_type=="DELETE" or event_type=="DELETE,ISDIR"  or event_type=="CREATE,ISDIR":
+                print("Delete atlandı:", image_path)
+                return True
 
 
-        # Burada gerekli işlem kodunuzu yerleştirin
-        # Örneğin, optimize.py scriptini çalıştırmak için:
-        optimize_command = [
-            "python3",
-            "/etc/WebP-Watch-N-Process/image-optimizer/optimize.py",
-            "--site", sys.argv[1],
-            "--image_dir", config['image_dir'],
-            "--base_dirs", "/home", "/home1", "/home2",
-            "--sizes", sizes,
-            "--file_path", image_path
-        ]
-        try:
-            subprocess.run(optimize_command, check=True)
-        except Exception as err:
-            print("Error:",err)
-            #time.sleep(60)
+            print(f"İşleniyor: {image_path}, Event Type: {event_type}")
+
+
+            # Burada gerekli işlem kodunuzu yerleştirin
+            # Örneğin, optimize.py scriptini çalıştırmak için:
+            optimize_command = [
+                "python3",
+                "/etc/WebP-Watch-N-Process/image-optimizer/optimize.py",
+                "--site", sys.argv[1],
+                "--image_dir", config['image_dir'],
+                "--base_dirs", "/home", "/home1", "/home2",
+                "--sizes", sizes,
+                "--file_path", image_path
+            ]
+            try:
+                subprocess.run(optimize_command, check=True)
+            except Exception as err:
+                print("Error:",err)
+                #time.sleep(60)
+    except Exception as err:
+        print(f"Event işlenirken hata oluştu: {err}")
+        logging.error(f"Event işlenirken hata oluştu: {err}")
 
 
 # Config yenileme fonksiyonu
@@ -113,14 +124,20 @@ def refresh_config():
             image_dir = new_image_dir
             print(f"Config güncellendi: Sizes={sizes}, Max Workers={max_workers} , Max Workers={image_dir}")
 
-# Config yenileme iş parçacığını başlat
-config_thread = threading.Thread(target=refresh_config, daemon=True)
-config_thread.start()
-
+try:
+    # Config yenileme iş parçacığını başlat
+    config_thread = threading.Thread(target=refresh_config, daemon=True)
+    config_thread.start()
+except Exception as e:
+    logging.error(f"Config yenileme iş parçacığını başlatırken hata oluştu: {e}")
 
 executor = ThreadPoolExecutor(max_workers=max_workers)
 while True:
-    event = redis_client.brpop(REDIS_QUEUE_KEY)
-    if event:
-        executor.submit(process_event, event)
-    time.sleep(0.1)
+    try:
+        event = redis_client.brpop(REDIS_QUEUE_KEY)
+        if event:
+            executor.submit(process_event, event)
+        time.sleep(0.1)
+    except Exception as e:
+         time.sleep(0.5)
+         logging.error(f"Redis'ten event okunurken hata oluştu: {e}")
